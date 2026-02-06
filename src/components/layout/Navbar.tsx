@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
+import logo from "@/assets/ira-logo.jpg";
 
 const navLinks = [
   { name: "Home", path: "/" },
