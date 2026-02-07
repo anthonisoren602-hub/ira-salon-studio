@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff, LogIn } from "lucide-react";
+import { Eye, EyeOff, LogIn, Mail, Lock, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,80 +17,127 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim() || !password.trim()) {
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+
+    if (!trimmedEmail || !trimmedPassword) {
       toast.error("Please fill in all fields");
       return;
     }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
     setLoading(true);
-    const { error } = await signIn(email, password);
+    const { error } = await signIn(trimmedEmail, trimmedPassword);
     setLoading(false);
+
     if (error) {
-      toast.error(error.message || "Login failed");
+      if (error.message?.includes("Email not confirmed")) {
+        toast.error("Please verify your email before logging in. Check your inbox.");
+      } else if (error.message?.includes("Invalid login credentials")) {
+        toast.error("Invalid email or password. Please try again.");
+      } else {
+        toast.error(error.message || "Login failed");
+      }
     } else {
-      toast.success("Login successful!");
+      toast.success("Welcome back!");
       navigate("/dashboard");
     }
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center py-12">
-      <div className="w-full max-w-md mx-auto px-4">
-        <div className="bg-card border border-border rounded-2xl p-8 shadow-card">
-          <div className="text-center mb-8">
-            <img src={logo} alt="Gauranshi Salons" className="h-16 w-auto mx-auto mb-4 rounded-lg" />
-            <h1 className="font-display text-2xl font-bold text-foreground">Associate Login</h1>
-            <p className="font-body text-sm text-muted-foreground mt-2">Sign in to your dashboard</p>
+    <div className="min-h-[85vh] flex items-center justify-center py-12 px-4">
+      <div className="w-full max-w-md">
+        {/* Card */}
+        <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-card">
+          {/* Header Banner */}
+          <div className="bg-gradient-rose px-8 py-8 text-center">
+            <img src={logo} alt="Gauranshi Salons" className="h-16 w-auto mx-auto rounded-xl shadow-soft" />
+            <h1 className="font-display text-2xl font-bold text-primary-foreground mt-4">
+              Welcome Back
+            </h1>
+            <p className="font-body text-sm text-primary-foreground/80 mt-1">
+              Sign in to your associate dashboard
+            </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="font-body text-sm font-medium text-foreground mb-2 block">Email</label>
-              <Input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
-                required
-                className="bg-background border-border focus:border-primary font-body"
-              />
-            </div>
-            <div>
-              <label className="font-body text-sm font-medium text-foreground mb-2 block">Password</label>
-              <div className="relative">
-                <Input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
-                  required
-                  className="bg-background border-border focus:border-primary font-body pr-10"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
+          {/* Form */}
+          <div className="p-6 md:p-8">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
+                <label className="font-body text-sm font-medium text-foreground mb-2 block">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="your@email.com"
+                    required
+                    className="pl-10 bg-background border-border font-body"
+                  />
+                </div>
               </div>
-            </div>
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-body"
-              size="lg"
-            >
-              {loading ? "Signing in..." : "Sign In"} <LogIn className="ml-2" size={18} />
-            </Button>
-          </form>
 
-          <div className="mt-6 text-center">
-            <p className="font-body text-sm text-muted-foreground">
-              Don't have an account?{" "}
-              <Link to="/signup" className="text-primary hover:underline font-medium">
-                Register as Associate
+              <div>
+                <label className="font-body text-sm font-medium text-foreground mb-2 block">
+                  Password
+                </label>
+                <div className="relative">
+                  <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter your password"
+                    required
+                    className="pl-10 pr-10 bg-background border-border font-body"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-body h-11"
+                size="lg"
+              >
+                {loading ? (
+                  <span className="flex items-center gap-2">
+                    <span className="animate-spin rounded-full h-4 w-4 border-2 border-primary-foreground/30 border-t-primary-foreground" />
+                    Signing in...
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    Sign In <LogIn size={16} />
+                  </span>
+                )}
+              </Button>
+            </form>
+
+            <div className="mt-6 pt-6 border-t border-border text-center">
+              <p className="font-body text-sm text-muted-foreground">
+                New to Gauranshi Salons?
+              </p>
+              <Link
+                to="/signup"
+                className="inline-flex items-center gap-1 font-body text-sm font-semibold text-primary hover:underline mt-1"
+              >
+                Register as Associate <ArrowRight size={14} />
               </Link>
-            </p>
+            </div>
           </div>
         </div>
       </div>
