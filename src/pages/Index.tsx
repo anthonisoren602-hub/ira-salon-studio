@@ -17,7 +17,6 @@ const Index = () => {
         </div>
         <div className="container relative mx-auto px-4 py-20">
           <div className="max-w-2xl space-y-6 animate-fade-in">
-            <img src={logo} alt="IRA Salon" className="h-20 w-auto rounded-xl shadow-card" />
             <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
               Welcome to{" "}
               <span className="text-gradient-gold">Gauranshi Salons</span>{" "}
