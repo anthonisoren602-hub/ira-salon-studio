@@ -19,7 +19,7 @@ const Index = () => {
           <div className="max-w-2xl space-y-6 animate-fade-in">
             <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
               Welcome to{" "}
-              <span className="text-gradient-gold">Gauranshi Salons</span>{" "}
+              <span className="text-gradient-gold">Gauranshi Salon</span>{" "}
               Pvt. Ltd. Associate Program
             </h1>
             <p className="font-body text-lg md:text-xl text-muted-foreground">
